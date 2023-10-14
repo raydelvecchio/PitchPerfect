@@ -1,8 +1,37 @@
 import requests
+from moviepy.editor import *
+import re
 import os
 import json
 from dotenv import load_dotenv
 load_dotenv('.env')
+
+
+class InputProcessor:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def process_video_input(filename: str) -> tuple[str, str]:
+        """
+        Given an input VIDEO file, split them up into their video and audio components. Returns a tuple of
+        (audio file, video file).
+        """
+        name = re.sub(r'\..*$', '', filename)
+
+        video = VideoFileClip(filename)
+
+        audio = video.audio
+        audio.write_audiofile(f'splits/{name}.mp3')
+
+        video_without_audio = video.without_audio()
+        video_without_audio.write_videofile(f'splits/{name}.mp4', audio_codec='none')
+
+        audio.close()
+        video.close()
+        video_without_audio.close()
+
+        return f'splits/{name}.mp3', f'splits/{name}.mp4'
 
 
 class Labs11:
@@ -90,4 +119,8 @@ if __name__ == "__main__":
         labs = Labs11(username)
         labs.generate_custom_response(audio_file, script)
 
-    test_11labs()
+    def test_input_processor():
+        video_file = "Bad_Pitch.mov"
+        InputProcessor.process_video_input(video_file)
+
+    test_input_processor()

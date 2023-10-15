@@ -9,6 +9,7 @@ pulze = Pulze()
 deep = DeepGram()
 TARGET_FILENAME = "TARGET_AUDIO.mp3"
 
+
 @app.get("/")
 def root():
     return {"status": "Crux API Active!"}
@@ -43,8 +44,8 @@ async def upload_file(file: UploadFile = File(...)):
         return JSONResponse(status_code=400, content={"detail": f"Error saving file: {e}"})
 
 
-@app.get("/get_texts")
-def get_texts(audience: str):
+@app.get("/parse")
+def get_info(audience: str):
     """
     Given an input audience, using the saved TARGET_FILENAME, generate feedback and write a new script, then
     return them.

@@ -82,7 +82,7 @@ def get_info(audience: str):
         feedback, new_script = pulze.generate_feedback(transcription, length)
         pulze.reset_context()  # this is NECESSARY to avoid messing up context window of pulze LLMs
 
-        return {"feedback": feedback, "new_script": new_script}
+        return {"feedback": feedback, "newScript": new_script}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing the audience input: {e}")
 

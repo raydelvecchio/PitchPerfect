@@ -192,9 +192,10 @@ class Labs11:
 
         return voice_id
 
-    def __generate_audio(self, voice_id: str, script: str, chunk_size: int = 1024):
+    def __generate_audio(self, voice_id: str, script: str, chunk_size: int = 1024) -> str:
         """
         Given a voice ID and a script, generate an MP3 file of that voice saying the given script.
+        Returns filename of the generated audio's location.
         """
         url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
         headers = {
@@ -212,17 +213,19 @@ class Labs11:
         }
 
         response = requests.post(url, json=data, headers=headers)
-        with open(f"audio_outputs/{self.username}_Output.mp3", 'wb') as f:
+        filename = f"audio_outputs/{self.username}_Output.mp3"
+        with open(filename, 'wb') as f:
             for chunk in response.iter_content(chunk_size=chunk_size):
                 if chunk:
                     f.write(chunk)
+        return filename
 
-    def generate_custom_response(self, audio_file: str, script: str):
+    def generate_custom_response(self, audio_file: str, script: str) -> str:
         """
         First creates a voice in 11labs with the given audio file, then speaks it with a script.
         """
         voice_id = self.__create_new_voice(audio_file)
-        self.__generate_audio(voice_id, script)
+        return self.__generate_audio(voice_id, script)
 
 
 class Tester:

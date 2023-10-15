@@ -6,3 +6,6 @@ librosa~=0.10.1
 soundfile~=0.12.1
 torch
 openai~=0.28.1
+fastapi
+uvicorn
+python-multipart

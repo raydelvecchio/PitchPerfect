@@ -27,5 +27,5 @@ def run_pipeline(username: str, filename: str):
 
 if __name__ == "__main__":
     un = "TedTeam"
-    tf = 'test_audio2.mp3'
+    tf = 'TARGET_AUDIO.mp3'
     run_pipeline(un, tf)

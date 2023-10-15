@@ -258,7 +258,7 @@ class Tester:
         p = Pulze()
         init = p.configure_initial_prompts(audience)
         print(init)
-        fix, better = p.generate_feedback("")
+        fix, better = p.generate_feedback(transcript, 50)
         print(fix)
         print("")
         print(better)

@@ -65,6 +65,9 @@ class Pulze:
         new_script = re.sub(r'\[(.*?)\]|\((.*?)\)', '', new_script)
         return feedback, new_script
 
+    def reset_context(self):
+        self.messages = []
+
 
 class DeepGram:
     def __init__(self):

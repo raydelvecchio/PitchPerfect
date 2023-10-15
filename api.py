@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from classes import Pulze, DeepGram, Labs11
+from pydantic import BaseModel
 import uvicorn
 
 
@@ -25,6 +26,11 @@ app.add_middleware(
 pulze = Pulze()
 deep = DeepGram()
 TARGET_FILENAME = "TARGET_AUDIO.mp3"
+
+
+class RequestData(BaseModel):
+    username: str
+    script: str
 
 
 @app.get("/")
@@ -74,25 +80,26 @@ def get_info(audience: str):
         transcription, length = deep.transcribe(TARGET_FILENAME)
         pulze.configure_initial_prompts(audience)
         feedback, new_script = pulze.generate_feedback(transcription, length)
+        pulze.reset_context()  # this is NECESSARY to avoid messing up context window of pulze LLMs
 
         return {"feedback": feedback, "new_script": new_script}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing the audience input: {e}")
 
 
-@app.get("/generate")
-def get_mp3(username: str, script: str):
+@app.post("/generate")
+def get_mp3(data: RequestData):
     """
     Given a username and a script, generate a new .mp3 in the style of the TARGET_FILE, or the originally uploaded
     reference clip. Then, send that file back to the frontend for a user to listen to or download.
     """
-    if username is None:
+    if data.username is None:
         raise HTTPException(status_code=400, detail="username parameter required!")
-    if script is None:
+    if data.script is None:
         raise HTTPException(status_code=400, detail="script parameter required!")
 
-    lab = Labs11(username)
-    location = lab.generate_custom_response(TARGET_FILENAME, script)
+    lab = Labs11(data.username)
+    location = lab.generate_custom_response(TARGET_FILENAME, data.script)
 
     return FileResponse(location, media_type="audio/mpeg",
                         headers={"Content-Disposition": f"attachment; filename=simulation.mp3"})

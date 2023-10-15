@@ -41,20 +41,28 @@ class Pulze:
         Sets up the hyperprompt and context, then loads them into the LLM's memory for it to recall later.
         """
         self.audience = audience
-        hyperprompt = "You are a professional speaking coach who helps people improve their presentations skills. I will give you a transcript of a presentation, including the text as well as data for each word: speak_time, which is how long each word is spoken for, and pause_time, the amount of time between the word and the previous word. Please give helpful and concise tips to the person pitching to improve the content of the presentation. Also, try to list specific timing and cadence issues if you see them in words where there is too long, too little, or an otherwise abnormal pause or pronunciation. Please only list the tips."
-        context_prompt = f"The intended audience for this presentation is {audience}; please consider this in your feedback. The next prompt I give you will be this presentation, including text, speak_time, and pause_time for each word. Do you understand? Respond only yes or no."
+        hyperprompt = "You are a professional speaking coach who helps people improve their presentations skills. I will give you a transcript of a presentation, including the text as well as a field pause_time, representing the amount of time between each spoken word. Please give helpful and concise tips to the person pitching to improve the content of the presentation. Also, try to list specific timing and cadence issues if you see them in words where there is too long, too little, or an otherwise abnormal pause. Provide your feedback in the form of ONE bulleted list."
+        context_prompt = f"The intended audience for this presentation is {audience}; please consider this in your feedback. The next prompt I give you will be this presentation, including text and pause_time for each word. Do you understand? Respond only yes or no."
         response = self.__call_llm(hyperprompt + context_prompt)
         return response
 
-    def generate_feedback(self, transcript: str) -> tuple[str, str]:
+    def generate_feedback(self, transcript: str, length: int, shorten: bool = True) -> tuple[str, str]:
         """
-        Given the DeepGram transcript, generate feedback for the user. Returns a tuple of (feedback, new script).
+        Given the DeepGram transcript, generate feedback for the user. Returns a tuple of (feedback, new script). Takes
+        in a length parameter that dictates roughly how long the response should be, in words. If we want to shorten
+        the length to a set amount, we iteratively prompt it to make it shorter!
         """
         feedback = self.__call_llm(transcript)
-        del self.messages[0]  # remove the hyper-prompt to save on tokens; not needed anymore
-        del self.messages[1]  # remove response to the hyper-prompt too to avoid confusion
-        rewrite_prompt = f"You are presenting to {self.audience}. Given your improvements, please write a new script for this presenter to follow that makes all necessary changes to the presentation. Do not include information like slide numbers, presenters, or any other text; just include the script for the presentation:"
+        del self.messages[0:2]  # remove the hyper-prompt to save on tokens; not needed anymore
+        rewrite_prompt = f"You are presenting to {self.audience}. Given your improvements, please write a new script for this presenter to follow that makes all necessary changes to the presentation. Ensure that you highlight the most important part of the presentation a lot. ONLY include the script for the presentation, making sure to NOT include things like captions, pauses, or who is speaking. Please include line breaks where pauses are relevant."
         new_script = self.__call_llm(rewrite_prompt)
+
+        if shorten:
+            shorten_prompt = f"It is VERY important that this script is shortened to at MOST {length} words. Focus on key points about the business, but remember we're presenting to {self.audience}. Please rewrite the script to match this requirement, again ONLY outputting the shorter script."
+            del self.messages[0:2]  # remove the original transcript / feedback from the messages list (context)
+            new_script = self.__call_llm(shorten_prompt)
+
+        new_script = re.sub(r'\[(.*?)\]|\((.*?)\)', '', new_script)
         return feedback, new_script
 
 
@@ -62,11 +70,12 @@ class DeepGram:
     def __init__(self):
         self.key = os.environ['Deepgram_Key']
 
-    def transcribe(self, filename: str) -> str:
+    def transcribe(self, filename: str) -> tuple[str, int]:
         """
-        Returns a summary of the response received from transcribing audio with the DeepGram API.
+        Returns a summary of the response received from transcribing audio with the DeepGram API, as well as the
+        number of words in the transcript.
         """
-        url = (f"https://api.deepgram.com/v1/listen?model=general&version=latest&punctuate=true&filler_words=true"
+        url = (f"https://api.deepgram.com/v1/listen?filler_words=true"
                f"&summarize=v2")
         headers = {
             "content-type": "audio/mpeg",
@@ -84,13 +93,13 @@ class DeepGram:
             for word_dict in entry['words']:
                 word_dict.pop('confidence', None)
                 word_dict.pop('punctuated_word', None)
-                word_dict['speak_time'] = round(float(word_dict['end']) - float(word_dict['start']), 2)  # speak time
                 word_dict['pause_time'] = round(float(word_dict['start']) - last_end, 2)  # pause between this/last word
                 last_end = float(word_dict['end'])
                 word_dict.pop('start', None)
                 word_dict.pop('end', None)
 
-        return str(data[0]).replace("\"", "").replace("'", "")
+        num_words = len(data[0]['transcript'].split(" "))
+        return str(data[0]).replace("\"", "").replace("'", ""), num_words
 
 
 class InputProcessor:
@@ -220,24 +229,24 @@ class Tester:
     @staticmethod
     def test_11labs():
         script = "Today I will be pitching my startup Crux. Thank you! I love analyzing pitch decks."
-        audio_file = "test_audio.mp3"
+        audio_file = "test_files/test_audio1.mp3"
         username = "Ray"
         labs = Labs11(username)
         labs.generate_custom_response(audio_file, script)
 
     @staticmethod
     def test_input_processor_video():
-        video_file = "Bad_Pitch.mov"
+        video_file = "test_files/Bad_Pitch.mov"
         InputProcessor.process_input(video_file)
 
     @staticmethod
     def test_input_processor_audio():
-        audio_file = "test_audio.mp3"
+        audio_file = "test_files/test_audio1.mp3"
         InputProcessor.process_input(audio_file)
 
     @staticmethod
     def test_transcribe():
-        audio_file = "test_audio.mp3"
+        audio_file = "test_files/test_audio1.mp3"
         dg = DeepGram()
         print(dg.transcribe(audio_file))
 
@@ -258,4 +267,4 @@ class Tester:
 
 
 if __name__ == "__main__":
-    test_pulze()
+    pass

@@ -1,9 +1,9 @@
 # Crux (Ted AI Multimodal Hackathon 2023)
-AI-assisted presentation preparation companion. Using DeepGram, Pulze, and ElevenLabs. Built at SHACK15 in San Francisco.
+AI-assisted presentation preparation companion. UI Located in separate repository. Using DeepGram, Pulze, and ElevenLabs. Built at SHACK15 in San Francisco.
 
 # Team
 * Ray Del Vecchio: Backend / Integration Developer
-* Ayssar A: Frontend Developer
+* Ayssar Arida: Frontend Developer
 * Paul Smith: Designer
 * Kailash Ambwani: Machine Learning Engineer
 

@@ -94,7 +94,8 @@ def get_mp3(username: str, script: str):
     lab = Labs11(username)
     location = lab.generate_custom_response(TARGET_FILENAME, script)
 
-    return FileResponse(location, media_type="audio/mpeg")
+    return FileResponse(location, media_type="audio/mpeg",
+                        headers={"Content-Disposition": f"attachment; filename=simulation.mp3"})
 
 
 if __name__ == "__main__":

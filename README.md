@@ -17,7 +17,7 @@ Our solution coaches you to make your presentation get to the crux clearly and w
 # Pipeline
 1. User prompted to record a pitch (audio currently; video model built but not integrated with frontend).
 2. Pitch recording sent to our backend API.
-3. API detects patterns in speech and video, including pitch content, timing, cadence, posture, gestures, and more.
+3. API detects patterns in speech and video, including pitch content, timing, and cadence (gesture and expressions coming once video model integrated).
 4. Suggestions are generated with Pulze on how to improve *all aspects* of this pitch, using these patterns as input.
 5. Suggestions displayed to the user.
 6. Pulze uses its *own* suggestions to iteratively improve the pitch, generating a NEW script of equal length.

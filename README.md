@@ -15,7 +15,7 @@ Current solutions focus on important style, mannerisms, speech, and body languag
 Our solution coaches you to make your presentation get to the crux clearly and with great style. It takes a recording/video of a user's presentation, detects their word timing/cadence, physical expressions and postures. It also learns where the crux of the presentation is. It then provides constructive feedback on how to improve both their content and delivery so that the crux is optimally communicated, making the entire presentation more successful. But it's not just a static list of tactics. We generate a new script based on this feedback, and play it to the user in their OWN voice, showing them their true potential to live up to. With this iterative process, users can hone their performance as much as they want, helping them learn and improve communication skills.
 
 # Pipeline
-1. User prompted to record a pitch (audio, video, or both).
+1. User prompted to record a pitch (audio currently; video model built but not integrated with frontend).
 2. Pitch recording sent to our backend API.
 3. API detects patterns in speech and video, including pitch content, timing, cadence, posture, gestures, and more.
 4. Suggestions are generated with Pulze on how to improve *all aspects* of this pitch, using these patterns as input.

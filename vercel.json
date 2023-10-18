@@ -1,0 +1,9 @@
+{
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "/api/api.py"
+      }
+    ]
+}
+what if i do not put everything in an api folder and instead all the files are in root?

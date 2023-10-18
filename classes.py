@@ -155,7 +155,7 @@ class Labs11:
     def __init__(self, username, store_file='keystore.json'):
         self.store_file = store_file
         self.username = username
-        self.key = os.environ['11labs_Key']
+        self.key = os.environ['E11labs_Key']
         if not os.path.exists(store_file):
             with open(store_file, "w") as file:
                 json.dump({}, file, indent=4)

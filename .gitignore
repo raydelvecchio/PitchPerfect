@@ -1,3 +1,4 @@
 .env
 test_files/Bad_Pitch.mov
 /splits
+.vercel

@@ -1,4 +1,6 @@
 .env
+.vercel
 test_files/Bad_Pitch.mov
 /splits
-.vercel
+api/test_files/Bad_Pitch.mov
+api/splits

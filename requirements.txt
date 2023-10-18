@@ -1,8 +1,8 @@
 python-dotenv~=1.0.0
 requests~=2.31.0
 moviepy~=1.0.3
-noisereduce~=3.0.0
-librosa~=0.10.1
+# noisereduce~=3.0.0
+# librosa~=0.10.1
 soundfile~=0.12.1
 torch
 openai~=0.28.1

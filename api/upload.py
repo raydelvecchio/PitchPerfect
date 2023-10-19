@@ -16,7 +16,11 @@ origins = [
     "https://crux-be.vercel.app",
     "https://crux-be.vercel.app/upload",
     "https://crux-be.vercel.app/parse",
-    "https://crux-be.vercel.app/generate"
+    "https://crux-be.vercel.app/generate"    
+    "https://crux-frontend-nine.vercel.app",
+    "https://crux-frontend-nine.vercel.app/upload",
+    "https://crux-frontend-nine.vercel.app/parse",
+    "https://crux-frontend-nine.vercel.app/generate"
 ]
 
 app.add_middleware(

@@ -33,7 +33,7 @@ app.add_middleware(
 
 app = FastAPI()
 
-TARGET_FILENAME = "TARGET_AUDIO.mp3"
+TARGET_FILENAME = "tmp/TARGET_AUDIO.mp3"
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):

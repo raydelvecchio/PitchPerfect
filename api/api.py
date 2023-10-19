@@ -35,7 +35,7 @@ app.add_middleware(
 
 pulze = Pulze()
 deep = DeepGram()
-TARGET_FILENAME = "TARGET_AUDIO.mp3"
+TARGET_FILENAME = "tmp/TARGET_AUDIO.mp3"
 
 
 class RequestData(BaseModel):

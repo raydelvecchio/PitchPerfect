@@ -1,9 +1,8 @@
 {
-    "routes": [
-      {
-        "src": "/api/(.*)",
-        "dest": "/api/api.py"
-      }
-    ]
+  "routes": [
+    { "src": "/upload", "methods": ["POST"], "dest": "/api/upload.py" },
+    { "src": "/parse", "methods": ["GET"], "dest": "/api/parse.py" },
+    { "src": "/generate", "methods": ["POST"], "dest": "/api/generate.py" },
+    { "src": "/$", "methods": ["GET"], "dest": "/api/index.py" }
+  ]
 }
-what if i do not put everything in an api folder and instead all the files are in root?

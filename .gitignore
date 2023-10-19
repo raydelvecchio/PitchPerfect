@@ -4,3 +4,4 @@ test_files/Bad_Pitch.mov
 /splits
 api/test_files/Bad_Pitch.mov
 api/splits
+__pycache__

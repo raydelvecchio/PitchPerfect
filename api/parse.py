@@ -35,7 +35,7 @@ app = FastAPI()
 
 pulze = Pulze()
 deep = DeepGram()
-TARGET_FILENAME = "tmp/TARGET_AUDIO.mp3"
+TARGET_FILENAME = "/tmp/TARGET_AUDIO.mp3"
 
 @app.get("/parse")
 def get_info(audience: str):

@@ -1,4 +1,4 @@
-from classes import InputProcessor, Pulze, DeepGram, Labs11
+from .classes import InputProcessor, Pulze, DeepGram, Labs11
 
 
 def run_pipeline(username: str, filename: str):

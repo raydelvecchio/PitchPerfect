@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from classes import Pulze, DeepGram, Labs11
+from .classes import Pulze, DeepGram, Labs11
 from pydantic import BaseModel
 import uvicorn
 

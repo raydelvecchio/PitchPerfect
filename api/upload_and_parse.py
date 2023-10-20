@@ -54,21 +54,21 @@ async def upload_and_parse(audience: str = Form(...), file: UploadFile = File(..
 
     """
 
-    # if data.audience is None:
+    # if audience is None:
     #     raise HTTPException(status_code=400, detail="audience parameter required!")
 
-    # if data.file is None:
+    # if file is None:
     #     raise HTTPException(status_code=400, detail="no audio file received!")
     
     try:
-        file_contents = await data.file.read()
-        filename = f"received_{data.file.filename}"
+        file_contents = await file.read()
+        filename = f"received_{file.filename}"
 
         with open(TARGET_FILENAME, "wb") as buffer:
             buffer.write(file_contents)
 
         transcription, length = deep.transcribe(TARGET_FILENAME)
-        pulze.configure_initial_prompts(data.audience)
+        pulze.configure_initial_prompts(audience)
         feedback, new_script = pulze.generate_feedback(transcription, length)
         pulze.reset_context()  # this is NECESSARY to avoid messing up context window of pulze LLMs
 

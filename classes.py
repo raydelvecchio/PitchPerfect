@@ -1,8 +1,8 @@
 import requests
 from moviepy.editor import *
-import noisereduce as nr
-import librosa
-import soundfile as sf
+# import noisereduce as nr
+# import librosa
+# import soundfile as sf
 import shutil
 import openai
 import re
@@ -120,10 +120,10 @@ class InputProcessor:
             audio_name = f'splits/{filename}'
             shutil.copy2(filename, audio_name)
 
-            if filter_noise:
-                y, sr = librosa.load(audio_name, sr=None)
-                reduced_noise = nr.reduce_noise(y=y, sr=int(sr))
-                sf.write(audio_name, reduced_noise, int(sr))
+            # if filter_noise:
+            #     y, sr = librosa.load(audio_name, sr=None)
+            #     reduced_noise = nr.reduce_noise(y=y, sr=int(sr))
+            #     sf.write(audio_name, reduced_noise, int(sr))
 
             return audio_name, ""
         else:
@@ -143,10 +143,10 @@ class InputProcessor:
             video.close()
             video_without_audio.close()
 
-            if filter_noise:
-                y, sr = librosa.load(audio_name, sr=None)
-                reduced_noise = nr.reduce_noise(y=y, sr=int(sr))
-                sf.write(audio_name, reduced_noise, int(sr))
+            # if filter_noise:
+            #     y, sr = librosa.load(audio_name, sr=None)
+            #     reduced_noise = nr.reduce_noise(y=y, sr=int(sr))
+            #     sf.write(audio_name, reduced_noise, int(sr))
 
             return audio_name, video_name
 

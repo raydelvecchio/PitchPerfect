@@ -4,3 +4,5 @@ test_files/Bad_Pitch.mov
 __pycache__
 TARGET_AUDIO.mp3
 audio_outputs/*.*
+.wsgi
+wsgi.py

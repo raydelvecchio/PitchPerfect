@@ -1,8 +1,7 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .classes import Pulze, DeepGram, Labs11
-from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -37,13 +36,8 @@ pulze = Pulze()
 deep = DeepGram()
 TARGET_FILENAME = "TARGET_AUDIO.mp3"
 
-class RequestData(BaseModel):
-    file: UploadFile = File(...)
-    audience: str = 'everyone'
-
-
 @app.post("/upload_and_parse")
-async def upload_and_parse(data: RequestData):
+async def upload_and_parse(audience: str = Form(...), file: UploadFile = File(...)):
     """
     Given an input audience, using the received file buffer, generate feedback and write a new script, then
     return them. Can call in javascript with the following

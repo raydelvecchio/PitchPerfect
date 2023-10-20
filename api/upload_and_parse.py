@@ -37,8 +37,13 @@ pulze = Pulze()
 deep = DeepGram()
 TARGET_FILENAME = "TARGET_AUDIO.mp3"
 
+class RequestData(BaseModel):
+    file: UploadFile = File(...)
+    audience: str = 'everyone'
+
+
 @app.post("/upload_and_parse")
-async def upload_and_parse(audience: str = 'everyone', file: UploadFile = File(...)):
+async def upload_and_parse(data: RequestData):
     """
     Given an input audience, using the received file buffer, generate feedback and write a new script, then
     return them. Can call in javascript with the following
@@ -55,21 +60,21 @@ async def upload_and_parse(audience: str = 'everyone', file: UploadFile = File(.
 
     """
 
-    # if audience is None:
+    # if data.audience is None:
     #     raise HTTPException(status_code=400, detail="audience parameter required!")
 
-    # if file is None:
+    # if data.file is None:
     #     raise HTTPException(status_code=400, detail="no audio file received!")
     
     try:
-        file_contents = await file.read()
-        filename = f"received_{file.filename}"
+        file_contents = await data.file.read()
+        filename = f"received_{data.file.filename}"
 
         with open(TARGET_FILENAME, "wb") as buffer:
             buffer.write(file_contents)
 
         transcription, length = deep.transcribe(TARGET_FILENAME)
-        pulze.configure_initial_prompts(audience)
+        pulze.configure_initial_prompts(data.audience)
         feedback, new_script = pulze.generate_feedback(transcription, length)
         pulze.reset_context()  # this is NECESSARY to avoid messing up context window of pulze LLMs
 

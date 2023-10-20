@@ -1,3 +1,6 @@
 .env
 test_files/Bad_Pitch.mov
 /splits
+__pycache__
+TARGET_AUDIO.mp3
+audio_outputs/*.*

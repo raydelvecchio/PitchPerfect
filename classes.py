@@ -46,7 +46,7 @@ class Pulze:
         response = self.__call_llm(hyperprompt + context_prompt)
         return response
 
-    def generate_feedback(self, transcript: str, length: int, shorten: bool = True) -> tuple[str, str]:
+    def generate_feedback(self, transcript: str, length: int, shorten: bool = True) -> tuple:
         """
         Given the DeepGram transcript, generate feedback for the user. Returns a tuple of (feedback, new script). Takes
         in a length parameter that dictates roughly how long the response should be, in words. If we want to shorten
@@ -73,7 +73,7 @@ class DeepGram:
     def __init__(self):
         self.key = os.environ['Deepgram_Key']
 
-    def transcribe(self, filename: str) -> tuple[str, int]:
+    def transcribe(self, filename: str) -> tuple:
         """
         Returns a summary of the response received from transcribing audio with the DeepGram API, as well as the
         number of words in the transcript.
@@ -110,7 +110,7 @@ class InputProcessor:
         pass
 
     @staticmethod
-    def process_input(filename: str, filter_noise=False) -> tuple[str, str]:
+    def process_input(filename: str, filter_noise=False) -> tuple:
         """
         Given an input video file, split them up into their video and audio components. Returns a tuple of
         (audio file, video file). Can optionally filter out noise if we set filter_noise=True. If the input is an

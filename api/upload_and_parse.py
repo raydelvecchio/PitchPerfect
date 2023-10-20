@@ -38,7 +38,7 @@ deep = DeepGram()
 TARGET_FILENAME = "TARGET_AUDIO.mp3"
 
 @app.post("/upload_and_parse")
-def get_info(audience: str, file: UploadFile = File(...)):
+async def upload_and_parse(audience: str, file: UploadFile = File(...)):
     """
     Given an input audience, using the received file buffer, generate feedback and write a new script, then
     return them. Can call in javascript with the following
@@ -62,7 +62,7 @@ def get_info(audience: str, file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="no audio file received!")
     
     try:
-        file_contents = file.file.read()
+        file_contents = await file.read()
         filename = f"received_{file.filename}"
 
         with open(TARGET_FILENAME, "wb") as buffer:

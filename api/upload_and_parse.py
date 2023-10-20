@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from .classes import Pulze, DeepGram, Labs11
+from io import BytesIO  # Import BytesIO
 
 app = FastAPI()
 
@@ -40,38 +41,23 @@ TARGET_FILENAME = "TARGET_AUDIO.mp3"
 async def upload_and_parse(audience: str = Form(...), file: UploadFile = File(...)):
     """
     Given an input audience, using the received file buffer, generate feedback and write a new script, then
-    return them. Can call in javascript with the following
-    lines:
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('audience', audience);
-
-    fetch('http://127.0.0.1:8000/upload/', {
-        method: 'POST',
-        body: formData })
-
-
+    return them.
     """
-
-    # if audience is None:
-    #     raise HTTPException(status_code=400, detail="audience parameter required!")
-
-    # if file is None:
-    #     raise HTTPException(status_code=400, detail="no audio file received!")
-    
     try:
         file_contents = await file.read()
-        filename = f"received_{file.filename}"
+        audio_buffer = BytesIO(file_contents)
 
-        with open(TARGET_FILENAME, "wb") as buffer:
-            buffer.write(file_contents)
-
-        transcription, length = deep.transcribe(TARGET_FILENAME)
+        
+        source = {'buffer': audio_buffer, 'mimetype': 'audio/mp3'}  # Assuming the file is an MP3
+        transcription, length = deep.transcribe(source)  # Pass the buffer and mimetype to deep.transcribe
+        
+        print("Transcription:", transcription)
+        print("Length:", length)
+        print("Audience:", audience)
         pulze.configure_initial_prompts(audience)
         feedback, new_script = pulze.generate_feedback(transcription, length)
-        pulze.reset_context()  # this is NECESSARY to avoid messing up context window of pulze LLMs
-
-        return {"filename": filename, "feedback": feedback, "newScript": new_script}
+        pulze.reset_context()  # Reset context to avoid messing up the context window of pulze LLMs
+        
+        return {"feedback": feedback, "newScript": new_script}
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing the audience input: {e}")

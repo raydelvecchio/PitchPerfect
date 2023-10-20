@@ -1,7 +1,6 @@
 {
   "routes": [
-    { "src": "/upload", "methods": ["POST"], "dest": "/api/upload.py" },
-    { "src": "/parse", "methods": ["GET"], "dest": "/api/parse.py" },
+    { "src": "/upload_and_parse", "methods": ["POST"], "dest": "/api/upload_and_parse.py" },
     { "src": "/generate", "methods": ["POST"], "dest": "/api/generate.py" },
     { "src": "/$", "methods": ["GET"], "dest": "/api/index.py" }
   ]

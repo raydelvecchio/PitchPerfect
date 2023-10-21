@@ -1,10 +1,14 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from classes import Pulze, DeepGram, Labs11
 from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
+
+frontend = os.environ['CRUX_Frontend_URL']
+backend = os.environ['CRUX_Backend_URL']
+
 CORS(app, origins = [
     "http://localhost",
     "http://localhost:3000",
@@ -12,18 +16,14 @@ CORS(app, origins = [
     "http://127.0.0.1:8001/upload",
     "http://127.0.0.1:8001/parse",
     "http://127.0.0.1:8001/generate",
-    "http://quacrobat.pythonanywhere.com",
-    "http://quacrobat.pythonanywhere.com/upload",
-    "http://quacrobat.pythonanywhere.com/parse",
-    "http://quacrobat.pythonanywhere.com/generate",
-    "https://quacrobat.pythonanywhere.com",
-    "https://quacrobat.pythonanywhere.com/upload",
-    "https://quacrobat.pythonanywhere.com/parse",
-    "https://quacrobat.pythonanywhere.com/generate",
-    "https://crux-frontend-nine.vercel.app",
-    "https://crux-frontend-nine.vercel.app/upload",
-    "https://crux-frontend-nine.vercel.app/parse",
-    "https://crux-frontend-nine.vercel.app/generate"
+    frontend,
+    frontend + "/upload",
+    frontend + "/parse",
+    frontend + "/generate",
+    backend,
+    backend + "/upload",
+    backend + "/parse",
+    backend + "/generate",
 ])
 
 pulze = Pulze()
@@ -84,7 +84,12 @@ def get_mp3():
     lab = Labs11(data["username"])
     location = lab.generate_custom_response(TARGET_FILENAME, data["script"])
 
-    return send_file(location, mimetype="audio/mpeg", as_attachment=True, attachment_filename="simulation.mp3")
+    with open(location, 'rb') as f:
+        file_data = f.read()
+    
+    response = Response(file_data, mimetype="audio/mpeg")
+    response.headers["Content-Disposition"] = "attachment; filename=simulation.mp3"
+    return response
 
 
 if __name__ == "__main__":

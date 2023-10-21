@@ -5,8 +5,25 @@ from werkzeug.utils import secure_filename
 import os
 
 app = Flask(__name__)
-CORS(app, origins=[
-    # Your list of origins here...
+CORS(app, origins = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://127.0.0.1:8001",
+    "http://127.0.0.1:8001/upload",
+    "http://127.0.0.1:8001/parse",
+    "http://127.0.0.1:8001/generate",
+    "http://quacrobat.pythonanywhere.com",
+    "http://quacrobat.pythonanywhere.com/upload",
+    "http://quacrobat.pythonanywhere.com/parse",
+    "http://quacrobat.pythonanywhere.com/generate",
+    "https://quacrobat.pythonanywhere.com",
+    "https://quacrobat.pythonanywhere.com/upload",
+    "https://quacrobat.pythonanywhere.com/parse",
+    "https://quacrobat.pythonanywhere.com/generate",
+    "https://crux-frontend-nine.vercel.app",
+    "https://crux-frontend-nine.vercel.app/upload",
+    "https://crux-frontend-nine.vercel.app/parse",
+    "https://crux-frontend-nine.vercel.app/generate"
 ])
 
 pulze = Pulze()

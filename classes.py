@@ -177,7 +177,7 @@ class Labs11:
         }
         data = {
             'name': f"Username_{self.username}",
-            'labels': '{"accent": "American"}',
+            # 'labels': '{"accent": "American"}',
             'description': 'Ted AI hackathon generated voice'
         }
         files = [

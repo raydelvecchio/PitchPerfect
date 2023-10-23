@@ -6,3 +6,4 @@ TARGET_AUDIO.mp3
 audio_outputs/*.*
 .wsgi
 wsgi.py
+pitch*.mp3

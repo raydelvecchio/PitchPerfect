@@ -47,12 +47,27 @@ def upload_file():
     if not file.filename.endswith(".mp3"):
         return jsonify(detail="The file is not an .mp3"), 400
 
+    pitch_id = request.form.get("pitch_id")
+    if not pitch_id:
+        return jsonify(detail="Pitch is missing!"), 400
+    
+    clean_pitch_id = secure_filename(pitch_id)
+    # protect against path traversal attacks
+    if clean_pitch_id != pitch_id:
+        return jsonify(detail="Invalid pitch id!"), 400
+    
+    pitch_filename = f"pitch-{pitch_id}.mp3"
+
+    # if file already exists, return it
+    if os.path.isfile(pitch_filename):
+        return jsonify(filename=pitch_filename, success=True, exists=True)
+
+    # otherwise, save it
     try:
         file_contents = file.read()
-        filename = secure_filename(file.filename)
-        with open(TARGET_FILENAME, "wb") as buffer:
+        with open(pitch_filename, "wb") as buffer:
             buffer.write(file_contents)
-        return jsonify(filename=filename, success=True)
+        return jsonify(filename=pitch_filename, success=True)
     except Exception as e:
         return jsonify(detail=f"Error saving file: {e}"), 400
 
@@ -60,11 +75,23 @@ def upload_file():
 @app.route("/parse", methods=["GET"])
 def get_info():
     audience = request.args.get('audience')
+    pitch_id = request.args.get('pitch_id')
+
     if not audience:
-        return jsonify(detail="audience parameter required!"), 400
+        return jsonify(detail="audience is required!"), 400
+    
+    if not pitch_id:
+        return jsonify(detail="Pitch is missing!"), 400
+    
+    clean_pitch_id = secure_filename(pitch_id)
+    # protect against path traversal attacks
+    if clean_pitch_id != pitch_id:
+        return jsonify(detail="Invalid pitch id!"), 400
+    
+    pitch_filename = f"pitch-{pitch_id}.mp3"
 
     try:
-        transcription, length = deep.transcribe(TARGET_FILENAME)
+        transcription, length = deep.transcribe(pitch_filename)
         pulze.configure_initial_prompts(audience)
         feedback, new_script = pulze.generate_feedback(transcription, length)
         pulze.reset_context()
@@ -80,9 +107,23 @@ def get_mp3():
         return jsonify(detail="username parameter required!"), 400
     if not data.get("script"):
         return jsonify(detail="script parameter required!"), 400
+    pitch_id = data.get("pitch_id")
+    if not pitch_id:
+        return jsonify(detail="Pitch is missing!"), 400
+    
+    clean_pitch_id = secure_filename(pitch_id)
+    # protect against path traversal attacks
+    if clean_pitch_id != pitch_id:
+        return jsonify(detail="Invalid pitch id!"), 400
+    
+    pitch_filename = f"pitch-{pitch_id}.mp3"
+
+    # if file doesn't exist, return an error
+    if not os.path.isfile(pitch_filename):
+        return jsonify(detail="Pitch file does not exist!"), 400
 
     lab = Labs11(data["username"])
-    location = lab.generate_custom_response(TARGET_FILENAME, data["script"])
+    location = lab.generate_custom_response(pitch_filename, data["script"])
 
     with open(location, 'rb') as f:
         file_data = f.read()

@@ -8,6 +8,6 @@ moviepy~=1.0.3
 openai~=0.28.1
 # fastapi
 uvicorn
-python-multipart
+# python-multipart
 flask
 flask_cors
